@@ -73,7 +73,7 @@ def get_claim_with_result(claim_id: int) -> dict:
     try:
         query = """
             SELECT 
-                c.id as claim_id, 
+                c.claim_id as claim_id, 
                 c.claim_amount, 
                 c.previous_claim_count, 
                 c.days_since_last_claim, 
@@ -81,8 +81,8 @@ def get_claim_with_result(claim_id: int) -> dict:
                 r.risk_score, 
                 r.prediction
             FROM claims c
-            JOIN risk_results r ON c.id = r.claim_id
-            WHERE c.id = %s
+            JOIN risk_results r ON c.claim_id = r.claim_id
+            WHERE c.claim_id = %s
         """
         cursor.execute(query, (claim_id,))
         result = cursor.fetchone()
