@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+		"name": "RiskGuard API Tests",
+		"description": "API Tests for RiskGuard Fast API backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. POST /predict - valid request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"claim_amount\": 10000,\n  \"previous_claim_count\": 0,\n  \"days_since_last_claim\": 365,\n  \"claim_category\": \"HOME\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/predict",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. POST /predict - missing required field",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"claim_amount\": 10000,\n  \"claim_category\": \"HOME\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/predict",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. POST /predict - invalid data type",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"claim_amount\": \"ONE THOUSAND\",\n  \"previous_claim_count\": 0,\n  \"days_since_last_claim\": 365,\n  \"claim_category\": \"HOME\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/predict",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. POST /predict - invalid business value",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"claim_amount\": -500,\n  \"previous_claim_count\": 0,\n  \"days_since_last_claim\": 365,\n  \"claim_category\": \"UNKNOWN_CATEGORY\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/predict",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. GET /claim/{id} - valid existing ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/claim/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"claim",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. GET /claim/{id} - nonexistent ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/claim/999999",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"claim",
+						"999999"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
