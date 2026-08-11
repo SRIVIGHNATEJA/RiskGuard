@@ -1,0 +1,117 @@
+==================================================
+API TESTING EVIDENCE
+==================================================
+
+1. POST /predict - valid request
+Status: 200 (Expected: 200)
+Response: {
+  "claim_id": 7,
+  "risk_score": 0.0002,
+  "prediction": "NORMAL"
+}
+
+2. POST /predict - missing required field
+Status: 422 (Expected: 422)
+Response: {
+  "detail": [
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "previous_claim_count"
+      ],
+      "msg": "Field required",
+      "input": {
+        "claim_amount": 10000.0,
+        "claim_category": "HOME"
+      }
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "days_since_last_claim"
+      ],
+      "msg": "Field required",
+      "input": {
+        "claim_amount": 10000.0,
+        "claim_category": "HOME"
+      }
+    }
+  ]
+}
+
+3. POST /predict - invalid data type
+Status: 422 (Expected: 422)
+Response: {
+  "detail": [
+    {
+      "type": "float_parsing",
+      "loc": [
+        "body",
+        "claim_amount"
+      ],
+      "msg": "Input should be a valid number, unable to parse string as a number",
+      "input": "ONE THOUSAND"
+    }
+  ]
+}
+
+4. POST /predict - invalid business value
+Status: 422 (Expected: 400 or 422)
+Response: {
+  "detail": [
+    {
+      "type": "greater_than_equal",
+      "loc": [
+        "body",
+        "claim_amount"
+      ],
+      "msg": "Input should be greater than or equal to 0",
+      "input": -500.0,
+      "ctx": {
+        "ge": 0.0
+      }
+    }
+  ]
+}
+
+5. GET /claim/7 - valid existing ID
+Status: 200 (Expected: 200)
+Response: {
+  "claim_id": 7,
+  "claim_amount": 10000.0,
+  "previous_claim_count": 0,
+  "days_since_last_claim": 365,
+  "claim_category": "HOME",
+  "risk_score": 0.0002,
+  "prediction": "NORMAL"
+}
+
+6. GET /claim/999999 - nonexistent ID
+Status: 404 (Expected: 404)
+Response: {
+  "detail": "Claim not found"
+}
+
+==================================================
+DATABASE VALIDATION & CROSS-LAYER EVIDENCE
+==================================================
+
+DB Validation 1: Check claim_id 7 in claims table
+Found Claim: {'claim_id': 7, 'claim_amount': Decimal('10000.00'), 'previous_claim_count': 0, 'days_since_last_claim': 365, 'claim_category': 'HOME', 'created_at': datetime.datetime(2026, 8, 12, 1, 25, 11)}
+
+DB Validation 2: Check claim_id 7 in risk_results table
+Found Result: {'result_id': 7, 'claim_id': 7, 'risk_score': Decimal('0.0002'), 'prediction': 'NORMAL', 'created_at': datetime.datetime(2026, 8, 12, 1, 25, 11)}
+
+DB Validation 3: JOIN claims and risk_results
+Joined Output: {'claim_id': 7, 'claim_amount': Decimal('10000.00'), 'risk_score': Decimal('0.0002'), 'prediction': 'NORMAL'}
+
+DB Validation 4: Cross-Layer Comparison (API vs DB)
+API Output    : amount=10000.0, risk_score=0.0002
+DB Output     : amount=10000.00, risk_score=0.0002
+MATCH VALIDATED: API precisely matches Database State.
+
+DB Validation 5: Aggregation over stored claims/results
+Category: AUTO | Count: 4 | Avg Risk: 0.9955
+Category: HOME | Count: 3 | Avg Risk: 0.0002
