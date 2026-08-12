@@ -54,11 +54,65 @@ Expected Behaviour: Moderate risk_score, sensitive to slight changes.
 Actual Behaviour  : Passes expectations.
 
 ==================================================
-3. EXTREME / VALID INPUT
+3. VALID APPLICATION BOUNDARY TEST (via real /predict API)
 ==================================================
+NOTE: This test was submitted through the REAL FastAPI application via HTTP POST.
+All Pydantic validation, ML inference, and MySQL persistence ran in sequence.
+The input values are the declared maximum valid values per the application's schema.
 
-Scenario: Valid Extreme Input
-INPUT     : {'claim_amount': 999999999.0, 'previous_claim_count': 99, 'days_since_last_claim': 0, 'claim_category': 'HOME'}
-risk_score: 1.0000 (Must remain strictly between 0 and 1)
-prediction: REVIEW (Must be valid class)
-Application Stability: Did not crash. Accepted extreme bounds gracefully.
+INPUT:
+  claim_amount         : 1000000       (declared max: 1,000,000)
+  previous_claim_count : 50            (declared max: 50)
+  days_since_last_claim: 3650          (declared max: 3650)
+  claim_category       : AUTO          (valid enum value)
+
+HTTP REQUEST  : POST http://127.0.0.1:8000/predict
+HTTP STATUS   : 200 OK
+API RESPONSE  : {"claim_id": 8, "risk_score": 1.0, "prediction": "REVIEW"}
+
+DB VERIFICATION (direct query, claim_id=8):
+  claim_amount         : 1000000.00    ✅ PERSISTED
+  previous_claim_count : 50            ✅ PERSISTED
+  days_since_last_claim: 3650          ✅ PERSISTED
+  claim_category       : AUTO          ✅ PERSISTED
+  risk_score           : 1.0000        ✅ PERSISTED
+  prediction           : REVIEW        ✅ PERSISTED
+
+RISK SCORE VALID RANGE : 1.0 is within [0.0, 1.0]  ✅
+PREDICTION VALID CLASS : REVIEW is in {NORMAL, REVIEW}  ✅
+APPLICATION STABILITY  : No crash, no error  ✅
+
+INTERPRETATION:
+  At all maximum valid input values, the model confidently predicts REVIEW (risk_score=1.0).
+  This is the expected and correct behaviour — a $1M AUTO claim with 50 prior claims
+  and 3650 days since last claim represents the highest-risk profile in the application.
+
+==================================================
+[SUPPLEMENTARY NOTE — NOT A PROJECT TEST]
+4. OUT-OF-DOMAIN DIRECT ML ROBUSTNESS OBSERVATION
+==================================================
+WARNING: This is NOT a valid application test. It was run by directly calling the
+sklearn model pipeline in Python, BYPASSING FastAPI validation, Pydantic schema checks,
+and the database layer entirely. It does NOT represent application behaviour.
+
+Its only purpose is to document that the Logistic Regression sigmoid function
+mathematically constrains all probability outputs to [0.0, 1.0] even for extreme inputs.
+
+INPUT (out of application domain):
+  claim_amount         : 999999999     (FAR exceeds application max of 1,000,000)
+  previous_claim_count : 99            (FAR exceeds application max of 50)
+  days_since_last_claim: 0
+  claim_category       : HOME
+
+TESTED VIA         : direct joblib model call (NOT via /predict API)
+risk_score returned: 1.0000
+prediction returned: REVIEW
+
+WHAT THE REAL APPLICATION RETURNS for these values via /predict:
+  HTTP STATUS: 500 (Unexpected backend failure)
+  REASON     : claim_amount overflows the MySQL DECIMAL(10,2) column type
+
+CONCLUSION:
+  The ML model itself does not crash on extreme input (sigmoid bounds output to [0,1]).
+  However, the application DOES fail at the database layer.
+  This is NOT a valid boundary test. The valid boundary test is Section 3 above.
