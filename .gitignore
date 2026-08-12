@@ -1,4 +1,17 @@
+# Python
 .env
-.venv
+.venv/
 __pycache__/
 *.pyc
+*.pyo
+
+# Node / Playwright
+node_modules/
+tests/playwright/playwright-report/
+tests/playwright/test-results/
+
+# OS
+.DS_Store
+
+# Local test infrastructure evidence (removed from tracking - see failures/README.md)
+docs/screenshots/failures/*.png
