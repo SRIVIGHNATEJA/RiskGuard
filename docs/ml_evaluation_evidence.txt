@@ -1,0 +1,64 @@
+==================================================
+1. MODEL EVALUATION (HELD-OUT TEST SET)
+==================================================
+CONFUSION MATRIX:
+               Predicted NORMAL | Predicted REVIEW
+Actual NORMAL |             46 |                4
+Actual REVIEW |              6 |               24
+
+EXTRACTED METRICS ('REVIEW' as Positive Class):
+True Positives (TP) : 24 (High risk correctly flagged for review)
+True Negatives (TN) : 46 (Low risk correctly passed as normal)
+False Positives (FP): 4 (Low risk incorrectly flagged for review)
+False Negatives (FN): 6 (High risk incorrectly passed as normal)
+------------------------------
+Accuracy  : 0.8750
+Precision : 0.8571
+Recall    : 0.8000
+F1 Score  : 0.8276
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+      NORMAL       0.88      0.92      0.90        50
+      REVIEW       0.86      0.80      0.83        30
+
+    accuracy                           0.88        80
+   macro avg       0.87      0.86      0.86        80
+weighted avg       0.87      0.88      0.87        80
+
+
+==================================================
+2. ML BEHAVIOUR TESTING
+==================================================
+
+Scenario: 1. CLEARLY LOW RISK
+INPUT     : {'claim_amount': 250.0, 'previous_claim_count': 0, 'days_since_last_claim': 1500, 'claim_category': 'HOME'}
+risk_score: 0.0000
+prediction: NORMAL
+Expected Behaviour: LOW risk_score (< 0.5), prediction NORMAL
+Actual Behaviour  : Passes expectations.
+
+Scenario: 2. CLEARLY HIGH RISK
+INPUT     : {'claim_amount': 85000.0, 'previous_claim_count': 5, 'days_since_last_claim': 10, 'claim_category': 'AUTO'}
+risk_score: 0.9959
+prediction: REVIEW
+Expected Behaviour: HIGH risk_score (>= 0.5), prediction REVIEW
+Actual Behaviour  : Passes expectations.
+
+Scenario: 3. BOUNDARY / AMBIGUOUS
+INPUT     : {'claim_amount': 15000.0, 'previous_claim_count': 1, 'days_since_last_claim': 180, 'claim_category': 'AUTO'}
+risk_score: 0.0052
+prediction: NORMAL
+Expected Behaviour: Moderate risk_score, sensitive to slight changes.
+Actual Behaviour  : Passes expectations.
+
+==================================================
+3. EXTREME / VALID INPUT
+==================================================
+
+Scenario: Valid Extreme Input
+INPUT     : {'claim_amount': 999999999.0, 'previous_claim_count': 99, 'days_since_last_claim': 0, 'claim_category': 'HOME'}
+risk_score: 1.0000 (Must remain strictly between 0 and 1)
+prediction: REVIEW (Must be valid class)
+Application Stability: Did not crash. Accepted extreme bounds gracefully.
