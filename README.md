@@ -137,13 +137,13 @@ The system is fortified by **25 automated assertions** spanning UI, API contract
 
 ---
 
-## 💼 Why This Matters for Technical Consulting
+## 💼 Project Philosophy & Core Competencies
 
-This repository serves as evidence of the ability to operate at the intersection of **AI, Engineering, and Business Strategy**:
+This architecture is designed to demonstrate capabilities at the intersection of **AI, Systems Engineering, and Business Logic**:
 
-1.  **Systems over Scripts**: I don't just train models; I build the API contracts, database schemas, and UIs required to operationalize them securely.
-2.  **Quality & Defensive Posture**: I believe unverified software is broken software. I implement cross-tier testing (Playwright, Selenium, Pytest, SQL assertions) to guarantee resilience.
-3.  **Technical Communication**: I translate complex system failures into actionable root cause analyses, bridging the gap between engineering implementations and business reliability.
+1.  **Systems over Scripts**: Transitioning ML models from isolated environments into operationalized services, protected by strict API contracts and relational database schemas.
+2.  **Defensive Posture**: Treating unverified software as a liability. Cross-tier automated testing (Playwright, Selenium, SQL assertions) is implemented to guarantee execution resilience across all layers.
+3.  **Technical Communication**: Translating complex system edge-cases into actionable root cause analyses that bridge technical depth with business reliability.
 
 ---
 
@@ -180,4 +180,9 @@ python3 docs/run_ml_evaluation.py         # ML Performance Metrics
 ```
 
 ---
-*For a deeper dive, explore the [Postman Collection](docs/riskguard_postman_collection.json), [Manual QA Plan](docs/manual-test-cases.md), or [RCA Documentation](docs/troubleshooting-rca.md).*
+*The presentation UI and FastAPI service will automatically bind to local development ports upon initialization.*
+
+---
+<div align="center">
+  <i>Engineered to demonstrate production-ready systems architecture, empirical ML validation, and defensive cross-tier integration strategies.</i>
+</div>
