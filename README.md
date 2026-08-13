@@ -1,6 +1,11 @@
-# RiskGuard
+# 🛡️ RiskGuard
 
-**A full-stack quality engineering laboratory and reference application for ML-backed systems, integrating Scikit-Learn inference, FastAPI REST services, MySQL transactional persistence, and multi-tier automated validation.**
+A full-stack quality engineering laboratory and reference application for ML-backed systems, integrating Scikit-Learn inference, FastAPI REST services, MySQL transactional persistence, and multi-tier automated validation.
+
+> 🔐 Licensed under **ISC License**  
+> 📌 Developed by **Sri Vighna Teja** | Original Work | 2026
+
+---
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.141-green.svg)](https://fastapi.tiangolo.com/)
