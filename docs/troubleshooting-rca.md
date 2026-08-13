@@ -189,15 +189,30 @@ previous_claim_count : 99
 Application Stability: Did not crash.
 ```
 
-However, when the same values were submitted through the real `/predict` API  
-endpoint — exactly as a user or tester would — the application returned:
+This is a **test scope error**, not an ML model defect. Two separate facts must be  
+kept distinct:
+
+**Fact A — ML model behaviour (direct call)**:  
+When `999,999,999` was fed directly to the sklearn pipeline via `joblib.load()`,  
+the Logistic Regression sigmoid produced a probability of `1.0` and returned  
+`prediction: REVIEW`. The ML model itself did **not** crash — the sigmoid function  
+mathematically constrains all outputs to `[0.0, 1.0]` regardless of input magnitude.
+
+**Fact B — Application behaviour (real API call)**:  
+When the identical values were submitted through the real `POST /predict` endpoint,  
+the application returned:
 
 ```
 HTTP 500 Internal Server Error
 {"detail": "Unexpected backend failure"}
 ```
 
-The test passed. The application failed. These are contradictory results.
+The failure occurred at the **MySQL persistence layer**, not the ML model.  
+`claim_amount DECIMAL(10,2)` accepts a maximum of `99,999,999.99`.  
+Inserting `999,999,999.0` raised an out-of-range MySQL error.
+
+The test was labelled as validating the *application* boundary.  
+It only validated one layer (sklearn) of a four-layer system.
 
 ---
 
