@@ -10,7 +10,7 @@ from backend.db import insert_claim_and_result, get_claim_with_result
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="RISKGuard API", description="ML-backed QA Lab Backend", version="1.0")
+app = FastAPI(title="RiskGuard API", description="ML-backed Risk Assessment Backend", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,

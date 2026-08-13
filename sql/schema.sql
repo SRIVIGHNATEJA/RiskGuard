@@ -1,4 +1,4 @@
--- RISKGuard QA Lab
+-- RiskGuard Database Schema
 -- Task 1.1: MySQL Database Schema Definition
 
 -- Create database if it doesn't exist

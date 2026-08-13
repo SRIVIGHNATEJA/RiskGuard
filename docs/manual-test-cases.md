@@ -1,4 +1,4 @@
-# RISKGuard QA Lab — Manual Test Suite
+# RiskGuard — Manual Test Suite
 
 This document records the first execution of manual test cases against the RiskGuard API and Frontend integration.
 

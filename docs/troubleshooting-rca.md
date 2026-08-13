@@ -2,7 +2,7 @@
 
 **Document type**: Incident RCA (Test Engineering Evidence)  
 **Project**: RiskGuard — ML-backed Insurance Risk Assessment  
-**Author**: Phase 9 — Troubleshooting Lab  
+**Author**: Quality Engineering Team  
 **Based on**: Real failures encountered during development and testing
 
 ---
