@@ -71,14 +71,14 @@ RiskGuard provides a clean, decoupled, four-tier architecture designed specifica
 
 * **What the user provides**: Structured claim parameters (`claim_amount`, `previous_claim_count`, `days_since_last_claim`, `claim_category`).
 * **What the system executes**: Strict schema parsing via Pydantic, dynamic feature scaling and one-hot encoding, real-time Logistic Regression probability inference, atomic two-table MySQL relational persistence, and state retrieval via SQL JOINs.
-* **What the user receives**: Immediate risk classification (`NORMAL` vs. `REVIEW`), an estimated risk score probability, and an immutable persistence record accessible via unique claim ID.
+* **What the user receives**: Immediate risk classification (`NORMAL` vs. `REVIEW`), an estimated risk score probability, and a persisted relational record accessible via unique claim ID.
 * **How quality is assured**: Multi-tier testing encompassing manual test plans, automated API contract validation, direct relational database verification, dual-framework UI automation (Python/Selenium and TypeScript/Playwright), and behavioral ML evaluation.
 
 ---
 
 ## ✨ Key Capabilities
 
-* **Synchronous End-to-End ML Inference**: Real-time tabular inference using an in-memory serialized Scikit-Learn pipeline without distributed model server overhead.
+* **Synchronous End-to-End ML Inference**: Low-latency, in-memory tabular inference using a serialized Scikit-Learn pipeline without distributed model server overhead.
 * **Multi-Layer Validation Boundaries**: Defensive validation enforced across three levels: frontend DOM form constraints, FastAPI/Pydantic v2 input schemas, and MySQL DDL table constraints.
 * **Atomic Two-Table Relational Transactions**: Claim submissions commit to both `claims` and `risk_results` tables inside an atomic database transaction with rollback protection.
 * **Dual-Stack UI Automation**: Parallel automated UI test suites implemented in both **Python + Selenium + pytest** and **TypeScript + Playwright**, enabling direct comparative evaluation of selector engines, wait strategies, and execution speeds.
@@ -115,7 +115,7 @@ flowchart TD
 | **Playwright Automation**| Secondary UI regression | Modern locator ergonomics, auto-waiting assertions, execution speed benchmarking | [`tests/playwright/`](tests/playwright/) |
 | **API Contract Testing** | REST interface boundaries | HTTP status codes (`200`, `400`, `404`, `422`), Pydantic validation error payloads | [`docs/riskguard_postman_collection.json`](docs/riskguard_postman_collection.json) |
 | **Database Integrity** | Relational persistence | Atomic commits, foreign key constraints (`ON DELETE CASCADE`), SQL JOIN parity | [`docs/run_api_db_validations.py`](docs/run_api_db_validations.py) |
-| **Cross-Layer Parity** | System-wide data consistency | Verifying that fields returned by the API match the database state byte-for-byte | [`docs/api_db_validation_evidence.txt`](docs/api_db_validation_evidence.txt) |
+| **Cross-Layer Parity** | System-wide data consistency | Verifying that fields returned by the API match the database state with exact value and type parity | [`docs/api_db_validation_evidence.txt`](docs/api_db_validation_evidence.txt) |
 | **ML Behavioral Testing**| Statistical & boundary quality | Confusion matrix, Precision/Recall/F1, low/high/ambiguous behavior, boundary stability | [`docs/ml_evaluation_evidence.txt`](docs/ml_evaluation_evidence.txt) |
 | **Root Cause Analysis** | Forensic defect investigation | Tracing integration failures across layers to isolate symptoms from root causes | [`docs/troubleshooting-rca.md`](docs/troubleshooting-rca.md) |
 
@@ -553,9 +553,11 @@ RiskGuard/
 │   ├── riskguard_postman_collection.json # Exported Postman test collection
 │   ├── run_api_db_validations.py  # Automation script for API/DB verification
 │   ├── run_ml_evaluation.py       # Script generating statistical ML evidence
+│   ├── sql_interview_drills.sql   # Relational aggregation & verification drills
 │   └── screenshots/               # Captured manual QA and failure evidence
 ├── requirements.txt               # Pinned Python production & test dependencies
 ├── .gitignore                     # Rigorous exclusions (venv, node_modules, reports)
+├── LICENSE                        # ISC License terms
 └── README.md                      # Project documentation
 ```
 

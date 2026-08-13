@@ -7,4 +7,5 @@ scikit-learn==1.9.0
 pandas==3.0.5
 joblib==1.5.3
 selenium==4.47.0
+pytest>=8.0.0
 requests==2.34.2
